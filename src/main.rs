@@ -24,7 +24,7 @@ use crate::object::DrawingObject;
 use crate::room::Room;
 use crate::wall::Wall;
 use opencv::core;
-use opencv::core::MatTraitManual;
+use opencv::core::{MatTraitManual, MatExprTrait};
 use opencv::imgproc;
 use opencv::types;
 use rocket_contrib::json::Json;
@@ -98,16 +98,21 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
 }
 
 fn objects_to_matrix(data: Raster) -> core::Mat {
-    let mut matrix: core::Mat;
-    unsafe {
-        match core::Mat::new_rows_cols(data.height, data.width, 0) {
-            Ok(value) => matrix = value,
-            Err(error) => {
-                println!("Create matrix error, {}", error);
-                exit(-1);
-            }
-        };
-    }
+    let matrix = match core::Mat::zeros(data.width, data.height, 0) {
+        Ok(value) => value,
+        Err(error) => {
+            println!("Create matrix error, {}", error);
+            exit(-1);
+        }
+    };
+
+    let mut matrix = match matrix.to_mat() {
+        Ok(value) => value,
+        Err(error) => {
+            println!("Convert matrix error, {}", error);
+            exit(-1);
+        }
+    };
 
     for object in &data.objects {
         if object.object_type == 0 || object.object_type == 4 {
