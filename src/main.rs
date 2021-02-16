@@ -28,6 +28,7 @@ use opencv::core::MatTraitManual;
 use opencv::imgproc;
 use opencv::types;
 use rocket_contrib::json::Json;
+use std::process::exit;
 
 #[post("/walls", format = "json", data = "<objects>")]
 fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
@@ -59,7 +60,13 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
     }
 
     for contour in contours {
-        let mut curve = core::Mat::default().unwrap();
+        let mut curve = match core::Mat::default() {
+            Ok(value) => value,
+            Err(error) => {
+                println!("Create matrix error, {}", error);
+                exit(-1);
+            }
+        };
         match imgproc::approx_poly_dp(&contour, &mut curve, eps, true) {
             Err(error) => {
                 println!("Approximation error {}", error);
@@ -67,7 +74,13 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
             _ => {}
         }
 
-        let data = curve.data_typed::<core::Vec2<i32>>().unwrap();
+        let data = match curve.data_typed::<core::Vec2<i32>>() {
+            Ok(value) => value,
+            Err(error) => {
+                println!("Data typed error {}", error);
+                exit(-1);
+            }
+        };
         let points = data
             .to_vec()
             .iter()
@@ -87,7 +100,13 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
 fn objects_to_matrix(data: Raster) -> core::Mat {
     let mut matrix: core::Mat;
     unsafe {
-        matrix = core::Mat::new_rows_cols(data.height, data.width, 0).unwrap();
+        match core::Mat::new_rows_cols(data.height, data.width, 0) {
+            Ok(value) => matrix = value,
+            Err(error) => {
+                println!("Create matrix error, {}", error);
+                exit(-1);
+            }
+        };
     }
 
     for object in &data.objects {
