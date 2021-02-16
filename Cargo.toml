@@ -1,0 +1,14 @@
+[package]
+name = "crowdstress-api"
+version = "0.1.0"
+authors = ["xyz27900 <xyz27900@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+serde = "1.0.123"
+serde_derive = "1.0.123"
+rocket = "0.4.7"
+rocket_contrib = "0.4.7"
+image = "0.23.13"
+opencv = "0.49.1"
+nanoid = "0.3.0"
