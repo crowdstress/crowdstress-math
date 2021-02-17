@@ -98,7 +98,7 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
 }
 
 fn objects_to_matrix(data: Raster) -> core::Mat {
-    let matrix = match core::Mat::zeros(data.width, data.height, 0) {
+    let matrix = match core::Mat::zeros(data.height, data.width, 0) {
         Ok(value) => value,
         Err(error) => {
             println!("Create matrix error, {}", error);
