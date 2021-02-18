@@ -24,12 +24,12 @@ use crate::object::DrawingObject;
 use crate::room::Room;
 use crate::wall::Wall;
 use opencv::core;
-use opencv::core::{MatTraitManual, MatExprTrait};
+use opencv::core::{MatExprTrait, MatTraitManual};
 use opencv::imgproc;
 use opencv::types;
 use rocket_contrib::json::Json;
-use std::process::exit;
 use std::cmp;
+use std::process::exit;
 
 #[post("/walls", format = "json", data = "<objects>")]
 fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
