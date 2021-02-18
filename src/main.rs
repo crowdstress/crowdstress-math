@@ -29,6 +29,7 @@ use opencv::imgproc;
 use opencv::types;
 use rocket_contrib::json::Json;
 use std::process::exit;
+use std::cmp;
 
 #[post("/walls", format = "json", data = "<objects>")]
 fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
@@ -146,8 +147,8 @@ fn objects_to_matrix(data: Raster) -> core::Mat {
             match imgproc::rectangle(
                 &mut matrix,
                 core::Rect {
-                    x: point1[0],
-                    y: point1[1],
+                    x: cmp::min(point1[0], point2[0]),
+                    y: cmp::min(point1[1], point2[1]),
                     width,
                     height,
                 },
