@@ -9,7 +9,10 @@ pub struct Wall {
 
 impl Wall {
     pub fn to_line(&self) -> Section {
-        [self.start, self.end]
+        Section {
+            start: self.start,
+            end: self.end,
+        }
     }
 
     pub fn from_object(object: &DrawingObject) -> Vec<Wall> {
@@ -24,18 +27,18 @@ impl Wall {
             let mut rect_walls: Vec<Wall> = Vec::with_capacity(4);
             rect_walls.push(Wall {
                 start: object.points[0],
-                end: [object.points[1][0], object.points[0][1]],
+                end: Point::new(object.points[1].y, object.points[0].y),
             });
             rect_walls.push(Wall {
-                start: [object.points[1][0], object.points[0][1]],
-                end: [object.points[1][0], object.points[1][1]],
+                start: Point::new(object.points[1].x, object.points[0].y),
+                end: Point::new(object.points[1].x, object.points[1].y),
             });
             rect_walls.push(Wall {
-                start: [object.points[1][0], object.points[1][1]],
-                end: [object.points[0][0], object.points[1][1]],
+                start: Point::new(object.points[1].x, object.points[1].y),
+                end: Point::new(object.points[0].x, object.points[1].y),
             });
             rect_walls.push(Wall {
-                start: [object.points[0][0], object.points[1][1]],
+                start: Point::new(object.points[0].x, object.points[1].y),
                 end: object.points[0],
             });
             for rect_wall in rect_walls {

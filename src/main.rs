@@ -4,12 +4,18 @@
 mod api;
 #[path = "config.rs"]
 mod config;
+#[path = "models/exit.rs"]
+mod exit;
+#[path = "utils/geometry.rs"]
+mod geometry;
 #[path = "models/object.rs"]
 mod object;
 #[path = "models/primitives.rs"]
 mod primitives;
 #[path = "models/room.rs"]
 mod room;
+#[path = "models/vector.rs"]
+mod vector;
 #[path = "models/wall.rs"]
 mod wall;
 
@@ -20,6 +26,7 @@ extern crate serde_derive;
 extern crate nanoid;
 
 use crate::api::Raster;
+use crate::exit::Exit;
 use crate::object::DrawingObject;
 use crate::room::Room;
 use crate::wall::Wall;
@@ -43,8 +50,20 @@ fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
 
 #[post("/rooms", format = "json", data = "<data>")]
 fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
-    let mut polygons: Vec<Room> = Vec::new();
+    let mut polygons: Vec<primitives::Polygon> = Vec::new();
     let eps = data.epsilon;
+    let exits: Vec<Exit> = data
+        .objects
+        .iter()
+        .filter(|object| object.object_type == 4)
+        .map(|object| Exit {
+            id: String::from(&object.id),
+            section: primitives::Section {
+                start: object.points[0],
+                end: object.points[1],
+            },
+        })
+        .collect();
     let object_matrix = objects_to_matrix(data.into_inner());
     let mut contours = types::VectorOfMat::new();
     match imgproc::find_contours(
@@ -85,17 +104,57 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
         let points = data
             .to_vec()
             .iter()
-            .map(|point| [point[0], point[1]])
+            .map(|point| primitives::Point::new(point[0] as f64, point[1] as f64))
             .collect();
-        polygons.push(Room {
-            id: nanoid::nanoid!(),
-            points,
-        });
+        polygons.push(points);
     }
 
     polygons.remove(0); // Удаляем внешний контур
 
-    Json(polygons)
+    let mut rooms: Vec<Room> = Vec::with_capacity(polygons.len());
+
+    for polygon in polygons {
+        let sections = geometry::polygon_to_sections(&polygon);
+        let mut exit_ids: Vec<String> = Vec::new();
+
+        for section in sections {
+            for exit in &exits {
+                if exit_ids.contains(&exit.id) {
+                    continue;
+                }
+
+                let exit_point1 = exit.section.start;
+                let exit_point2 = exit.section.end;
+
+                let vector1 = geometry::get_vector_to_line(section, exit_point1);
+                let vector2 = geometry::get_vector_to_line(section, exit_point2);
+
+                let mut to_compare: Vec<i32> = Vec::with_capacity(2);
+
+                // if geometry::is_lines_intersects(vector1.product(999.0).to_line(exit_point1), section) {
+                to_compare.push(vector1.get_length() as i32);
+                // }
+
+                // if geometry::is_lines_intersects(vector2.product(999.0).to_line(exit_point1), section) {
+                to_compare.push(vector2.get_length() as i32);
+                // }
+
+                let distance = to_compare.iter().min().unwrap().clone();
+
+                if distance == 0 {
+                    exit_ids.push(String::from(&exit.id));
+                }
+            }
+        }
+
+        rooms.push(Room {
+            id: nanoid::nanoid!(),
+            points: polygon,
+            exits: exit_ids,
+        });
+    };
+
+    Json(rooms)
 }
 
 fn objects_to_matrix(data: Raster) -> core::Mat {
@@ -117,17 +176,17 @@ fn objects_to_matrix(data: Raster) -> core::Mat {
 
     for object in &data.objects {
         if object.object_type == 0 || object.object_type == 4 {
-            let point1 = object.points[0];
-            let point2 = object.points[1];
+            let point1 = object.points[0].to_i32();
+            let point2 = object.points[1].to_i32();
             match imgproc::line(
                 &mut matrix,
                 core::Point {
-                    x: point1[0],
-                    y: point1[1],
+                    x: point1.x,
+                    y: point1.y,
                 },
                 core::Point {
-                    x: point2[0],
-                    y: point2[1],
+                    x: point2.x,
+                    y: point2.y,
                 },
                 core::Scalar::from(255.0),
                 config::OBJECT_LINE_WIDTH,
@@ -140,15 +199,15 @@ fn objects_to_matrix(data: Raster) -> core::Mat {
         }
 
         if object.object_type == 1 {
-            let point1 = object.points[0];
-            let point2 = object.points[1];
-            let width = (point2[0] as f64 - point1[0] as f64).abs() as i32;
-            let height = (point2[1] as f64 - point1[1] as f64).abs() as i32;
+            let point1 = object.points[0].to_i32();
+            let point2 = object.points[1].to_i32();
+            let width = (point2.x - point1.x).abs();
+            let height = (point2.y - point1.y).abs();
             match imgproc::rectangle(
                 &mut matrix,
                 core::Rect {
-                    x: cmp::min(point1[0], point2[0]),
-                    y: cmp::min(point1[1], point2[1]),
+                    x: cmp::min(point1.x, point2.x),
+                    y: cmp::min(point1.y, point2.y),
                     width,
                     height,
                 },
