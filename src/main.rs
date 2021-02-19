@@ -4,20 +4,6 @@
 mod api;
 #[path = "config.rs"]
 mod config;
-#[path = "models/exit.rs"]
-mod exit;
-#[path = "utils/geometry.rs"]
-mod geometry;
-#[path = "models/object.rs"]
-mod object;
-#[path = "models/primitives.rs"]
-mod primitives;
-#[path = "models/room.rs"]
-mod room;
-#[path = "models/vector.rs"]
-mod vector;
-#[path = "models/wall.rs"]
-mod wall;
 
 #[macro_use]
 extern crate rocket;
@@ -26,10 +12,13 @@ extern crate serde_derive;
 extern crate nanoid;
 
 use crate::api::Raster;
-use crate::exit::Exit;
-use crate::object::DrawingObject;
-use crate::room::Room;
-use crate::wall::Wall;
+use crowdstress_common::{
+    drawing_object::DrawingObject,
+    exit::Exit, geometry,
+    primitives,
+    room::Room,
+    wall::Wall,
+};
 use opencv::core;
 use opencv::core::{MatExprTrait, MatTraitManual};
 use opencv::imgproc;
@@ -152,7 +141,7 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
             points: polygon,
             exits: exit_ids,
         });
-    };
+    }
 
     Json(rooms)
 }

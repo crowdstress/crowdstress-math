@@ -308,11 +308,21 @@ dependencies = [
 name = "crowdstress-api"
 version = "0.1.0"
 dependencies = [
+ "crowdstress-common",
  "image",
  "nanoid",
  "opencv",
  "rocket",
  "rocket_contrib",
+ "serde",
+ "serde_derive",
+]
+
+[[package]]
+name = "crowdstress-common"
+version = "0.1.0"
+source = "git+https://github.com/xyz27900/crowdstress-common.git#8760ddf59e7ee944af9d6098cdf9009991cde76d"
+dependencies = [
  "serde",
  "serde_derive",
 ]
