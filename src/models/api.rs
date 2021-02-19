@@ -1,4 +1,4 @@
-use crowdstress_common::drawing_object::DrawingObject;
+use crowdstress_common::prelude::DrawingObject;
 
 #[derive(Deserialize)]
 pub struct Raster {

@@ -12,13 +12,7 @@ extern crate serde_derive;
 extern crate nanoid;
 
 use crate::api::Raster;
-use crowdstress_common::{
-    drawing_object::DrawingObject,
-    exit::Exit, geometry,
-    primitives,
-    room::Room,
-    wall::Wall,
-};
+use crowdstress_common::prelude::*;
 use opencv::core;
 use opencv::core::{MatExprTrait, MatTraitManual};
 use opencv::imgproc;
@@ -39,7 +33,7 @@ fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
 
 #[post("/rooms", format = "json", data = "<data>")]
 fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
-    let mut polygons: Vec<primitives::Polygon> = Vec::new();
+    let mut polygons: Vec<Polygon> = Vec::new();
     let eps = data.epsilon;
     let exits: Vec<Exit> = data
         .objects
@@ -47,7 +41,7 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
         .filter(|object| object.object_type == 4)
         .map(|object| Exit {
             id: String::from(&object.id),
-            section: primitives::Section {
+            section: Section {
                 start: object.points[0],
                 end: object.points[1],
             },
@@ -93,7 +87,7 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
         let points = data
             .to_vec()
             .iter()
-            .map(|point| primitives::Point::new(point[0] as f64, point[1] as f64))
+            .map(|point| Point::new(point[0] as f64, point[1] as f64))
             .collect();
         polygons.push(points);
     }
