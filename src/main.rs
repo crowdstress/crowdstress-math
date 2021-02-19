@@ -11,7 +11,7 @@ extern crate rocket;
 extern crate serde_derive;
 extern crate nanoid;
 
-use crate::api::Raster;
+use crate::api::{GetRooms, GetWalls};
 use crowdstress_common::prelude::*;
 use opencv::core;
 use opencv::core::{MatExprTrait, MatTraitManual};
@@ -21,9 +21,10 @@ use rocket_contrib::json::Json;
 use std::cmp;
 use std::process::exit;
 
-#[post("/walls", format = "json", data = "<objects>")]
-fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
-    let walls: Vec<Wall> = objects
+#[post("/walls", format = "json", data = "<data>")]
+fn walls(data: Json<GetWalls>) -> Json<Vec<Wall>> {
+    let walls: Vec<Wall> = data
+        .objects
         .iter()
         .map(|object| Wall::from_object(object))
         .flatten()
@@ -32,7 +33,7 @@ fn walls(objects: Json<Vec<DrawingObject>>) -> Json<Vec<Wall>> {
 }
 
 #[post("/rooms", format = "json", data = "<data>")]
-fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
+fn rooms(data: Json<GetRooms>) -> Json<Vec<Room>> {
     let mut polygons: Vec<Polygon> = Vec::new();
     let eps = data.epsilon;
     let exits: Vec<Exit> = data
@@ -140,7 +141,7 @@ fn rooms(data: Json<Raster>) -> Json<Vec<Room>> {
     Json(rooms)
 }
 
-fn objects_to_matrix(data: Raster) -> core::Mat {
+fn objects_to_matrix(data: GetRooms) -> core::Mat {
     let matrix = match core::Mat::zeros(data.height, data.width, 0) {
         Ok(value) => value,
         Err(error) => {

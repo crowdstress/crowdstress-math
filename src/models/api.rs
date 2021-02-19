@@ -1,7 +1,12 @@
-use crowdstress_common::prelude::DrawingObject;
+use crowdstress_common::drawing_object::DrawingObject;
 
 #[derive(Deserialize)]
-pub struct Raster {
+pub struct GetWalls {
+    pub objects: Vec<DrawingObject>,
+}
+
+#[derive(Deserialize)]
+pub struct GetRooms {
     pub width: i32,
     pub height: i32,
     pub epsilon: f64,
