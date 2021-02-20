@@ -22,11 +22,11 @@ use std::cmp;
 use std::process::exit;
 
 #[post("/walls", format = "json", data = "<data>")]
-fn walls(data: Json<GetWalls>) -> Json<Vec<Wall>> {
-    let walls: Vec<Wall> = data
+fn walls(data: Json<GetWalls>) -> Json<Vec<Section>> {
+    let walls: Vec<Section> = data
         .objects
         .iter()
-        .map(|object| Wall::from_object(object))
+        .map(|object| Section::from_object(object))
         .flatten()
         .collect();
     Json(walls)
