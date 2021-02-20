@@ -107,11 +107,11 @@ fn rooms(data: Json<GetRooms>) -> Json<Vec<Room>> {
                     continue;
                 }
 
-                let exit_point1 = exit.section.start;
-                let exit_point2 = exit.section.end;
+                let exit_point1 = &exit.section.start;
+                let exit_point2 = &exit.section.end;
 
-                let vector1 = geometry::get_vector_to_line(section, exit_point1);
-                let vector2 = geometry::get_vector_to_line(section, exit_point2);
+                let vector1 = geometry::get_vector_to_line(&section, exit_point1);
+                let vector2 = geometry::get_vector_to_line(&section, exit_point2);
 
                 let mut to_compare: Vec<i32> = Vec::with_capacity(2);
 

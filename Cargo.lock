@@ -204,9 +204,9 @@ dependencies = [
 
 [[package]]
 name = "clang-sys"
-version = "1.1.0"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cb92721cb37482245ed88428f72253ce422b3b4ee169c70a0642521bb5db4cc"
+checksum = "f54d78e30b388d4815220c8dd03fea5656b6c6d32adb59e89061552a102f8da1"
 dependencies = [
  "glob",
  "libc",
@@ -321,7 +321,7 @@ dependencies = [
 [[package]]
 name = "crowdstress-common"
 version = "0.1.0"
-source = "git+https://github.com/xyz27900/crowdstress-common.git#c92cc1ebd5495fc8a0f21d1a29df363df7a9f747"
+source = "git+https://github.com/xyz27900/crowdstress-common.git#d993fbb8b8b3711c8b53d5ec4516a233fed465aa"
 dependencies = [
  "serde",
  "serde_derive",
