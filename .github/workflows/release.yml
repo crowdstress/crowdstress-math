@@ -46,7 +46,7 @@ jobs:
       - name: Compress binary
         run: zip crowdstress-api crowdstress-api
 
-      - name: Upload release binary
+      - name: Upload compressed release binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
