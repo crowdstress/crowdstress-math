@@ -41,7 +41,9 @@ jobs:
         run: cargo build --release
 
       - name: Compress binary
-        run: zip crowdstress-api ./target/release/crowdstress-api
+        run: |
+          cd target/release/
+          zip crowdstress-api crowdstress-api
 
       - name: Upload compressed release binary
         uses: actions/upload-release-asset@v1
@@ -49,6 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: crowdstress-api.zip
+          asset_path: ./target/release/crowdstress-api.zip
           asset_name: crowdstress-api.zip
           asset_content_type: application/zip
