@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  release:
+      types: [ released ]
+      branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Check
+      run: cargo check --verbose
+      
+    - name: Build release
+      run: cargo build --release
+      
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: crowdstress-api
+        path: ./target/release/crowdstress-api
