@@ -115,17 +115,23 @@ fn rooms(data: Json<GetRooms>) -> Json<Vec<Room>> {
 
                 let mut to_compare: Vec<i32> = Vec::with_capacity(2);
 
-                // if geometry::is_lines_intersects(vector1.product(999.0).to_line(exit_point1), section) {
-                to_compare.push(vector1.get_length() as i32);
-                // }
+                if geometry::is_lines_intersects(
+                    &vector1.product(999.0).to_line(*exit_point1),
+                    &section,
+                ) {
+                    to_compare.push(vector1.get_length() as i32);
+                }
 
-                // if geometry::is_lines_intersects(vector2.product(999.0).to_line(exit_point1), section) {
-                to_compare.push(vector2.get_length() as i32);
-                // }
+                if geometry::is_lines_intersects(
+                    &vector2.product(999.0).to_line(*exit_point1),
+                    &section,
+                ) {
+                    to_compare.push(vector2.get_length() as i32);
+                }
 
-                let distance = to_compare.iter().min().unwrap().clone();
+                let distance = to_compare.iter().min();
 
-                if distance == 0 {
+                if !distance.is_none() && *distance.unwrap() == 0 {
                     exit_ids.push(String::from(&exit.id));
                 }
             }
