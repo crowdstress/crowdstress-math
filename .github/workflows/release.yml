@@ -37,9 +37,6 @@ jobs:
       - name: Set nightly
         run: rustup default nightly
 
-      - name: Check
-        run: cargo check --verbose
-
       - name: Build release
         run: cargo build --release
 
