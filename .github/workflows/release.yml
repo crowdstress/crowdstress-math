@@ -2,8 +2,8 @@ name: Release
 
 on:
   release:
-      types: [ released ]
-      branches: [ master ]
+    types: [ released ]
+    branches: [ master ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,26 +14,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: fusion-engineering/setup-git-credentials@v2
-      with:
-        credentials: ${{secrets.GIT_CREDENTIALS}}
-        
-    - uses: actions/checkout@v2
-    
-    - name: Install dependencies
-      run: sudo apt install -y clang libclang-dev libopencv-dev
-    
-    - name: Set nightly
-      run: rustup default nightly
-    
-    - name: Check
-      run: cargo check --verbose
-      
-    - name: Build release
-      run: cargo build --release
-      
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: crowdstress-api
-        path: ./target/release/crowdstress-api
+      - uses: fusion-engineering/setup-git-credentials@v2
+        with:
+          credentials: ${{secrets.GIT_CREDENTIALS}}
+
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt install -y clang libclang-dev libopencv-dev
+
+      - name: Set nightly
+        run: rustup default nightly
+
+      - name: Check
+        run: cargo check --verbose
+
+      - name: Build release
+        run: cargo build --release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: crowdstress-api
+          path: ./target/release/crowdstress-api
