@@ -14,7 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: fusion-engineering/setup-git-credentials@v2
+      with:
+        credentials: ${{secrets.GIT_CREDENTIALS}}
+        
     - uses: actions/checkout@v2
+    
+    - name: Install dependencies
+      run: sudo apt install -y clang libclang-dev libopencv-dev
+    
+    - name: Set nightly
+      run: rustup default nightly
     
     - name: Check
       run: cargo check --verbose
