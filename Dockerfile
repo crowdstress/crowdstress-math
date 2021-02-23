@@ -22,9 +22,9 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN rustup default nightly
 
-RUN git config --global credential.helper store
-RUN echo "$GIT_CREDENTIALS" > ~/.git-credentials
-RUN chmod 600 ~/.git-credentials
+RUN git config --global credential.helper store && \
+    echo "$GIT_CREDENTIALS" > ~/.git-credentials && \
+    chmod 600 ~/.git-credentials
 
 RUN cargo build --release
 
