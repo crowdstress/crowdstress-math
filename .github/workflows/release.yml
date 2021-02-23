@@ -35,7 +35,8 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: Build and push docker image
+      - name: Build, tag and push docker image
         run: |
-          docker build -f Dockerfile -t api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
+          docker build -f Dockerfile -t crowdstress-api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
+          docker tag crowdstress-api ghcr.io/crowdstress/api:latest
           docker push ghcr.io/crowdstress/api:latest
