@@ -33,4 +33,4 @@ FROM alpine
 WORKDIR /app
 COPY --from=builder /app/target/release/crowdstress-api .
 
-CMD ["/app/crowdstress-api"]
+RUN ls
