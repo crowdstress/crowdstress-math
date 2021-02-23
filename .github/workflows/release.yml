@@ -37,5 +37,5 @@ jobs:
 
       - name: Build and push docker image
         run: |
-          docker build -f Dockerfile -t crowdstres-api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
-          docker push ghcr.io/crowdstress/crowdstres-api:latest
+          docker build -f Dockerfile -t api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
+          docker push ghcr.io/crowdstress/api:latest
