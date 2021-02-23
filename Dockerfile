@@ -26,7 +26,7 @@ RUN git config --global credential.helper store
 RUN echo "$GIT_CREDENTIALS" > ~/.git-credentials
 RUN chmod 600 ~/.git-credentials
 
-RUN cargo build
+RUN cargo build --release
 
 FROM alpine
 
