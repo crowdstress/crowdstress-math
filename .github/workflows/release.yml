@@ -14,6 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup credentials
+        uses: fusion-engineering/setup-git-credentials@v2
+        with:
+          credentials: ${{ secrets.GIT_CREDENTIALS }}
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -28,15 +33,25 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.ACCESS_TOKEN }}
+      - name: Install dependencies
+        run: sudo apt install -y clang libclang-dev libopencv-dev
 
-      - name: Build, tag and push docker image
+      - name: Set nightly
+        run: rustup default nightly
+
+      - name: Build release
+        run: cargo build --release
+
+      - name: Compress binary
         run: |
-          docker build -f Dockerfile -t crowdstress-api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
-          docker tag crowdstress-api ghcr.io/crowdstress/api:latest
-          docker push ghcr.io/crowdstress/api:latest
+          cd target/release/
+          zip crowdstress-api crowdstress-api
+      - name: Upload compressed release binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/release/crowdstress-api.zip
+          asset_name: crowdstress-api.zip
+          asset_content_type: application/zip
