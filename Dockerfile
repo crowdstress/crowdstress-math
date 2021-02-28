@@ -1,4 +1,4 @@
-FROM ghcr.io/crowdstress/rust-opencv:latest AS builder
+FROM ubuntu-rust-opencv:latest AS builder
 WORKDIR /app
 
 # Setup git credentials
@@ -9,11 +9,12 @@ RUN git config --global credential.helper store && \
 
 # Build
 COPY src ./src
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock Rocket.toml ./
 RUN cargo build --release
 
 # Bundle
-FROM ghcr.io/crowdstress/ubuntu-opencv:latest
+FROM ubuntu-opencv:latest
 WORKDIR /app
 COPY --from=builder /app/target/release/crowdstress-api .
+COPY --from=builder /app/Rocket.toml .
 ENTRYPOINT ["/app/crowdstress-api"]

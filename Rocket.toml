@@ -1,0 +1,30 @@
+[development]
+address = "localhost"
+port = 8000
+workers = 2
+keep_alive = 5
+read_timeout = 5
+write_timeout = 5
+log = "normal"
+limits = { forms = 32768 }
+
+[staging]
+address = "0.0.0.0"
+port = 8000
+workers = 2
+keep_alive = 5
+read_timeout = 5
+write_timeout = 5
+log = "normal"
+limits = { forms = 32768 }
+
+[production]
+address = "0.0.0.0"
+port = 8000
+workers = 2
+keep_alive = 5
+read_timeout = 5
+write_timeout = 5
+log = "normal"
+secret_key = "SL/P3cvNYk9C/3Hjp72Bwm4CGA0V3EVpGG0Z5zhb93s="
+limits = { forms = 32768 }
