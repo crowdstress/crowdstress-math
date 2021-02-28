@@ -27,15 +27,16 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - name: Setup credentials
+        uses: fusion-engineering/setup-git-credentials@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GIT_CREDENTIALS }}
 
-      - name: Build, tag and push docker image
-        run: |
-          docker build -f Dockerfile -t crowdstress-api . --build-arg GIT_CREDENTIALS=${{ secrets.GIT_CREDENTIALS }}
-          docker tag crowdstress-api ghcr.io/crowdstress/api:latest
-          docker push ghcr.io/crowdstress/api:latest
+      - name: Install dependencies
+        run: sudo apt install -y clang libclang-dev libopencv-dev
+
+      - name: Set nightly
+        run: rustup default nightly
+
+      - name: Build release
+        run: cargo build --release

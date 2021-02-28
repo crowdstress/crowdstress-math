@@ -28,8 +28,5 @@ jobs:
       - name: Set nightly
         run: rustup default nightly
 
-      - name: Check
-        run: cargo check --verbose
-
       - name: Build
-        run: cargo build --verbose
+        run: cargo check --verbose
