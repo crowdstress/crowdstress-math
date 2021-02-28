@@ -1,6 +1,6 @@
 [package]
 name = "crowdstress-api"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["xyz27900 <kozlov.work.52@gmail.com>"]
 edition = "2018"
 
