@@ -15,6 +15,6 @@ RUN cargo build --release
 # Bundle
 FROM ubuntu-opencv:latest
 WORKDIR /app
-COPY --from=builder /app/target/release/crowdstress-api .
+COPY --from=builder /app/target/release/crowdstress-math .
 COPY --from=builder /app/Rocket.toml .
-ENTRYPOINT ["/app/crowdstress-api"]
+ENTRYPOINT ["/app/crowdstress-math"]

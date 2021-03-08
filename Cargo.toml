@@ -1,5 +1,5 @@
 [package]
-name = "crowdstress-api"
+name = "crowdstress-math"
 version = "0.1.2"
 authors = ["xyz27900 <kozlov.work.52@gmail.com>"]
 edition = "2018"
