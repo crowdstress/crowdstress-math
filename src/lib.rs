@@ -211,5 +211,5 @@ fn objects_to_matrix(data: GetRooms) -> core::Mat {
 }
 
 pub fn start() -> Rocket {
-    rocket::ignite().mount("/", routes![walls, rooms])
+    rocket::ignite().mount("/math", routes![walls, rooms])
 }
