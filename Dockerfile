@@ -9,7 +9,7 @@ RUN git config --global credential.helper store && \
 
 # Build
 COPY src ./src
-COPY Cargo.toml Cargo.lock Rocket.toml ./
+COPY Cargo.toml Rocket.toml ./
 RUN cargo build --release
 
 # Bundle
